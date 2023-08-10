@@ -17,9 +17,13 @@ print(df)
 #  Date       | Open   | High   | Low    | Close  | #Adj Close | Volume #=del
 #df = df.drop(columns=['Date'])
 del df['Adj Close'] #adj close
+del df['Open']
+del df['High']
+del df['Low']
+del df['Volume']
 
 #0 indicated neutral -- all values relate to closing
-df['num'] = [i for i in range(len(df))]
+#df['num'] = [i for i in range(len(df))]
 df['mov'] = '' #1 = rising, -1 falling -- closing price
 df['5sMvA'] = ''
 df['8sMvA'] = ''
@@ -65,14 +69,33 @@ df['13wMvA'] = wma(13)
 
 df = df.iloc[13:] #dropping bad data
 
-#removing "break time"
-#for i in df
+def plot():
+    #removing "break time"
+    #for i in df
 
-#exit()
-lst = [df['5sMvA'],df['8sMvA'],df['13sMvA'], df['5wMvA'], df['8wMvA'], df['13wMvA'], df['Close']]
-#lst = [df['5wMvA'], df['8wMvA'], df['13wMvA'], df['close'] ]
-fig = px.line(df, x=df['num'],y=lst, title='Line Graph for Two Lines')
+    #exit()
+    lst = [df['5sMvA'],df['8sMvA'],df['13sMvA'], df['5wMvA'], df['8wMvA'], df['13wMvA'], df['Close']]
+    #lst = [df['5wMvA'], df['8wMvA'], df['13wMvA'], df['close'] ]
+    #fig = px.line(df, x=df['num'],y=lst, title='Line Graph for Two Lines')
 
-df.to_csv(r'E:\ai\stock\stock\v2.0\test.csv', encoding='utf-8', index=False)
+    from plotly.subplots import make_subplots
+    import plotly.graph_objects as go
+
+    fig = make_subplots(rows=2, cols=1)
+
+    fig.append_trace(go.Line(
+        x=df['num'],
+        y=df['Close'],
+    ), row=1, col=1)
+
+    fig.append_trace(go.Line(
+        x=df['num'],
+        y=df['Volume'],
+    ), row=2, col=1)
+
+
+
+
+
+df.to_csv('test.csv', encoding='utf-8', index=False)
 print(df)
-fig.show()
